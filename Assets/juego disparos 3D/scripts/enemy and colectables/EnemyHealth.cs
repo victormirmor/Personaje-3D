@@ -111,7 +111,7 @@
 
             // Increase the score by the enemy's score value.
             //ScoreManager.score += startingHealth;
-            gameManager.PointsUp(startingHealth);
+            gameManager.AddPoints(startingHealth);
 
             // After 2 seconds destory the enemy.
             Destroy (gameObject, 2f);

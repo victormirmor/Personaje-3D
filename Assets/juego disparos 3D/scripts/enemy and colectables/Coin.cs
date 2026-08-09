@@ -17,8 +17,8 @@ public class Coin : MonoBehaviour{
 
     void OnTriggerEnter(Collider other){
 		if (other.tag == TagPlayer){      
-        GameManager.Points+=Points;
-        GameManager.Coins--;
+        GameManager.points+=Points;
+        GameManager.coins--;
        thisCoin.SetActive(false);
        ColiderCoin.enabled=false;
        FXManager.SoundPlay(_Coin, Sound);
@@ -29,7 +29,7 @@ public class Coin : MonoBehaviour{
     }
     void Awake(){
       SearchManagers();
-      GameManager.Coins++;
+      GameManager.coins++;
     } 
     
 

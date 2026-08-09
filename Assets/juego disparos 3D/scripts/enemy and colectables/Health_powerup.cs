@@ -6,7 +6,7 @@ namespace CompleteProject
     {
         public int live=10;
         public bool isCoin=false;
-        PlayerHealth playerHealth;       // Reference to the player's health.
+        HealthManager playerHealth;       // Reference to the player's health.
         GameObject player;
 
 
@@ -14,7 +14,7 @@ namespace CompleteProject
         {
             // Set up the reference.
             player = GameObject.FindGameObjectWithTag ("Player");
-            playerHealth = player.GetComponent <PlayerHealth> ();
+            playerHealth = FindObjectOfType <HealthManager> ();
         }
 
         void OnTriggerEnter (Collider other){
