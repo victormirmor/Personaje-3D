@@ -149,6 +149,12 @@ public class GameManager : MonoBehaviour
         Colectables = Coins;
     }
 
+    public void PointsUp(int point)
+    {
+        Points+=Points;
+        Debug.Log("tienes "+ Points +"puntos");
+    }
+
     void SearchManagers()
     {
 

@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Personaje 3D.sln"
+    "dotnet.defaultSolution": "Personaje-3D.sln"
 }

@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.EventSystems; // Required for UI check
 
 
-namespace CompleteProject{
-
     public class PlayerShooting : MonoBehaviour
     {
         public int Bullets_rest = 20;                  // Balas disponibles para disparar
@@ -12,7 +10,7 @@ namespace CompleteProject{
         public Transform gunTip;                        // Punto de salida del arma (muro o punta del cañón)
 
         float timer;                                    // Temporizador para la cadencia
-        ParticleSystem gunParticles;                    // Efectos de partículas
+        //ParticleSystem gunParticles;                    // Efectos de partículas
         AudioSource gunAudio;                           // Sonido de disparo
         Light gunLight;                                 // Luz del fogonazo
         public Light faceLight;                         // Luz auxiliar
@@ -21,19 +19,20 @@ namespace CompleteProject{
         void Awake ()
         {
             // Referencias a componentes visuales y auditivos
-            gunParticles = GetComponent<ParticleSystem> ();
+            //gunParticles = GetComponent<ParticleSystem> ();
             gunAudio = GetComponent<AudioSource> ();
             gunLight = GetComponent<Light> ();
         }
 
         void Update (){
     // Si el tiempo está congelado por la pausa, no procesa disparos
-    if (Time.timeScale == 0f|| EventSystem.current.IsPointerOverGameObject()) return;
+    //if (Time.timeScale == 0f|| EventSystem.current.IsPointerOverGameObject()) return;
 
             timer += Time.deltaTime;
 
             if (Input.GetButton ("Fire1") && timer >= timeBetweenBullets && Time.timeScale != 0 && Bullets_rest > 0)
             {
+                Debug.Log("disparo");
                 Shoot ();
                 Bullets_rest--;
             }
@@ -59,8 +58,8 @@ namespace CompleteProject{
     gunLight.enabled = true;
     faceLight.enabled = true;
 
-    gunParticles.Stop ();
-    gunParticles.Play ();
+    //gunParticles.Stop ();
+    //gunParticles.Play ();
 
     // Instanciar el proyectil (respeta los valores configurados en su prefab)
     if (bulletPrefab != null && gunTip != null)
@@ -75,8 +74,7 @@ namespace CompleteProject{
     }
 
     Bullets_rest += amount;
-} 
-        }
+    } 
 
           
-    }
+}
