@@ -3,43 +3,33 @@ using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour
 {
-    [Header("Referencias de Texto UI")]
-    [SerializeField] private Text pointsText;
+    [Header("Referencias de UI del HUD")]
     [SerializeField] private Text livesText;
+    //[SerializeField] private Text coinsText;
+    [SerializeField] private Text scoreText;
 
-    [Header("Formato de Visualización")]
-    [SerializeField] private string pointsFormat = "000000"; // Agrega ceros a la izquierda (ej: 000050)
-
-    private int lastPoints = -1;
-    private int lastLives = -1;
-
-    void Update()
+    private void Update()
     {
         UpdateHUD();
     }
 
-    private void UpdateHUD()
+    public void UpdateHUD()
     {
         if (GameManager.Instance == null) return;
 
-        // Actualizar Puntos solo si cambiaron
-        if (GameManager.Instance.points != lastPoints)
+        if (livesText != null)
         {
-            lastPoints = GameManager.Instance.points;
-            if (pointsText != null)
-            {
-                pointsText.text = lastPoints.ToString(pointsFormat);
-            }
+            livesText.text = GameManager.Instance.lives.ToString();
         }
 
-        // Actualizar Vidas solo si cambiaron
-        if (GameManager.Instance.lives != lastLives)
+        /*if (coinsText != null)
         {
-            lastLives = GameManager.Instance.lives;
-            if (livesText != null)
-            {
-                livesText.text = lastLives.ToString();
-            }
+            coinsText.text = GameManager.Instance.coins.ToString();
+        }*/
+
+        if (scoreText != null)
+        {
+            scoreText.text = GameManager.Instance.points.ToString();
         }
     }
 }

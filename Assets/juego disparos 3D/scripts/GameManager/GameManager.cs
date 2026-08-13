@@ -1,30 +1,20 @@
 using UnityEngine;
-
-public enum GameState
-{
-    InGame,
-    Pause,
-    GameOver
-}
+using CompleteProject;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [Header("Estado del Juego")]
-    public GameState currentGameState = GameState.InGame;
+    [Header("Estado de Salud y Vidas")]
+    public int hearts = 3-00;
+    public int maxHearts = 100;
+    public int lives = 3;
 
-    [Header("Datos Globales (Lectura/Escritura)")]
-    public int lives = 10;
+    [Header("Economía y Puntuación")]
     public int points = 0;
     public int coins = 0;
-    public int hearts = 100;
 
-    [Header("Ajustes de Audio Globales")]
-    [Range(0f, 1f)] public float musicVolume = 1f;
-    [Range(0f, 1f)] public float sfxVolume = 1f;
-
-    void Awake()
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -34,6 +24,18 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    public void ApplyDamage(int amount)
+    {
+        hearts -= amount;
+        if (hearts < 0) hearts = 0;
+    }
+
+    public void Heal(int amount)
+    {
+        hearts += amount;
+        if (hearts > maxHearts) hearts = maxHearts;
     }
 
     public void AddPoints(int amount)
@@ -46,21 +48,32 @@ public class GameManager : MonoBehaviour
         coins += amount;
     }
 
-    public void Heal(int amount)
+    public void ProcessPlayerDeath()
     {
-        hearts += amount;
-        if (hearts >= 300)
-        {
-            hearts = 100;
-            lives++;
-        }
-    }
+        lives--;
+        Debug.Log($"<color=orange>[GameManager] ProcessPlayerDeath() ejecutado. Vidas restantes: {lives}</color>");
 
-    public void ResetStats()
-    {
-        lives = 8;
-        hearts = 100;
-        points = 0;
-        coins = 0;
+        // 1. Destruir todos los enemigos en juego registrados por el EnemySpawn
+        EnemySpawn spawner = FindObjectOfType<EnemySpawn>();
+        if (spawner != null)
+        {
+            spawner.ClearAllEnemies();
+        }
+
+        // 2. Gestionar la reaparición o el Game Over
+        if (lives > 0)
+        {
+            hearts = maxHearts;
+
+            PlayerRespawn respawnSystem = FindObjectOfType<PlayerRespawn>();
+            if (respawnSystem != null)
+            {
+                respawnSystem.Respawn();
+            }
+        }
+        else
+        {
+            Debug.Log("<color=red><b>[GAME OVER]</b> Se agotaron las vidas completas.</color>");
+        }
     }
 }

@@ -1,20 +1,15 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
     public class CameraFollow : MonoBehaviour
     {
-        public GameObject Player;            // Posición del objetivo (Player)
+        [Header("Objetivo a Seguir")]
+        public Transform target;            // Transform del Player
         public float smoothing = 5f;        // Velocidad de interpolación de la cámara
-        public string Tag_Seguir="player";
-
-        void Awake() {
-            if (Player == null)
-                Player = GameObject.FindWithTag(Tag_Seguir);
-
-        }
 
         [Header("Configuración de Posición y Ángulo")]
-        public float cameraDistance = 6.0f; 
+        public float cameraDistance = 6.0f;
         public Vector3 cameraRotation = new Vector3(35f, 0f, 0f);
 
         [Header("Límites del Escenario (Bordes del Piso)")]
@@ -26,7 +21,7 @@ using System.Collections.Generic;
 
         [Header("Compensación de Ángulo (Anti-Franja Inferior)")]
         [Tooltip("Margen extra para frenar la cámara antes en el borde inferior (Z negativo)")]
-        public float bottomEdgePadding = 3.5f; 
+        public float bottomEdgePadding = 3.5f;
 
         [Header("Objetos Intermedios (Obstáculos)")]
         public LayerMask obstacleLayer;
@@ -36,23 +31,35 @@ using System.Collections.Generic;
 
         private List<Renderer> hiddenRenderers = new List<Renderer>();
 
+        void Awake()
+        {
+            FindPlayerTarget();
+        }
+
+        void Update()
+        {
+            if (target == null)
+            {
+                FindPlayerTarget();
+            }
+        }
+
         void FixedUpdate()
         {
-            if (Player  == null) return;
+            if (target == null) return;
 
             // 1. Aplicar rotación
             Quaternion targetRotation = Quaternion.Euler(cameraRotation);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, smoothing * Time.fixedDeltaTime);
 
             // 2. Calcular posición ideal respecto al player
-            Vector3 origin = Player.transform.position + Vector3.up * 1.0f;
+            Vector3 origin = target.position + Vector3.up * 1.0f;
             Vector3 backDirection = -(targetRotation * Vector3.forward);
             Vector3 targetCamPos = origin + (backDirection * cameraDistance);
 
             // 3. Aplicar Clamping con compensación para el borde inferior (minZ)
             if (useClamping)
             {
-                // El límite inferior compensa la inclinación para no mostrar el abismo abajo
                 float adjustedMinZ = minZ + bottomEdgePadding;
 
                 targetCamPos.x = Mathf.Clamp(targetCamPos.x, minX, maxX);
@@ -65,11 +72,20 @@ using System.Collections.Generic;
             HandleObstacleOcclusion();
         }
 
+        private void FindPlayerTarget()
+        {
+            GameObject playerObj = GameObject.FindWithTag(GameTags.Player);
+            if (playerObj != null)
+            {
+                target = playerObj.transform;
+            }
+        }
+
         void HandleObstacleOcclusion()
         {
             RestoreHiddenRenderers();
 
-            Vector3 direction = Player.transform.position - transform.position;
+            Vector3 direction = target.position - transform.position;
             float distance = direction.magnitude;
 
             RaycastHit[] hits = Physics.RaycastAll(transform.position, direction.normalized, distance, obstacleLayer);
@@ -114,5 +130,4 @@ using System.Collections.Generic;
             Gizmos.DrawLine(p3, p4);
             Gizmos.DrawLine(p4, p1);
         }
-
 }

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 731906687434070053}
   - component: {fileID: 8191380895693999496}
+  - component: {fileID: 6251768191691216871}
   m_Layer: 0
   m_Name: coin1
   m_TagString: Untagged
@@ -46,6 +47,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: {x: 0, y: -80}
+--- !u!114 &6251768191691216871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3310064332631842381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a47ad88fdcb50d714bd5ab5a2b7840fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  value: 100
+  shieldDuration: 0
 --- !u!1 &4098445630264785066
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,151 +1,178 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class HealthManager : MonoBehaviour
 {
-    // Singleton
     public static HealthManager Instance { get; private set; }
 
-    // Variable global accesible desde otros scripts
-    public static int startingHealth = 100;
+    [Header("Referencias de Sub-sistemas")]
+    [SerializeField] private HealthUI healthUI;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip deathClip;
 
-    public int currentHealth;
+    private GameObject player;
+    private PlayerControllerCC controller;
+    private PlayerShooting playerShooting;
+    private Animator anim;
+    private Collider playerCollider;
 
-    [Header("UI References")]
-    public Slider healthSlider;
-    public Text healthText; // Referencia al texto en el Canvas (Text (Legacy) o similar)
-    public Image damageImage;
-
-    [Header("Effects & Audio")]
-    public AudioClip deathClip;
-    public float flashSpeed = 5f;
-    public Color flashColour = new Color(1f, 0f, 0f, 0.1f);
-
-    // Referencias al Player ocultas en el Inspector
-    [HideInInspector] public Animator playerAnim;
-    [HideInInspector] public AudioSource playerAudio;
-    [HideInInspector] public PlayerControllerCC playerMovement;
+    [Header("Estado de Escudo")]
+    public bool isShieldActive = false;
 
     private bool isDead;
-    private bool damaged;
+    private bool isProcessingDeath;
 
     private void Awake()
     {
-        // Control de instancia Singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        currentHealth = startingHealth;
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        audioSource = GetComponent<AudioSource>();
+        BindPlayerReferences();
     }
 
-    private void OnEnable()
+    public void BindPlayerReferences()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        FindPlayerReferences();
-        InitUI();
-    }
-
-    private void FindPlayerReferences()
-    {
-        GameObject playerObj = GameObject.FindWithTag("Player");
-        if (playerObj != null)
+        player = GameObject.FindWithTag(GameTags.Player);
+        if (player != null)
         {
-            playerAnim = playerObj.GetComponent<Animator>();
-            playerAudio = playerObj.GetComponent<AudioSource>();
-            playerMovement = playerObj.GetComponent<PlayerControllerCC>();
+            controller = player.GetComponent<PlayerControllerCC>();
+            playerShooting = player.GetComponent<PlayerShooting>();
+            anim = player.GetComponent<Animator>();
+            playerCollider = player.GetComponent<Collider>();
+        }
+
+        isDead = false;
+        isProcessingDeath = false;
+
+        if (healthUI != null)
+        {
+            healthUI.UpdateUI();
         }
     }
 
-    private void InitUI()
+    /// <summary>
+    /// Restablece salud, animaciones y habilita controles tras reaparecer.
+    /// </summary>
+    public void ResetPlayerState()
     {
-        if (healthSlider != null)
+        isDead = false;
+        isProcessingDeath = false;
+
+        if (playerCollider != null) playerCollider.enabled = true;
+        if (playerShooting != null) playerShooting.enabled = true;
+        if (controller != null) controller.enabled = true;
+
+        if (anim != null)
         {
-            healthSlider.maxValue = startingHealth;
-            healthSlider.value = currentHealth;
+            anim.ResetTrigger("Die");
+            anim.Rebind();
+            anim.Update(0f);
         }
 
-        UpdateHealthUI();
+        if (healthUI != null)
+        {
+            healthUI.UpdateUI();
+        }
     }
 
-    private void Update()
+    public void ActivateShield(float duration)
     {
-        if (damaged)
+        StopCoroutine(nameof(ShieldRoutine));
+        StartCoroutine(ShieldRoutine(duration));
+    }
+
+    private IEnumerator ShieldRoutine(float duration)
+    {
+        isShieldActive = true;
+
+        if (healthUI != null)
         {
-            if (damageImage != null)
-                damageImage.color = flashColour;
+            healthUI.SetShieldUIState(true);
         }
-        else
+
+        float timer = duration;
+
+        while (timer > 0)
         {
-            if (damageImage != null)
-                damageImage.color = Color.Lerp(damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
+            timer -= Time.deltaTime;
+
+            if (healthUI != null)
+            {
+                healthUI.UpdateShieldTimer(timer);
+            }
+
+            yield return null;
         }
-        damaged = false;
+
+        isShieldActive = false;
+        if (healthUI != null)
+        {
+            healthUI.SetShieldUIState(false);
+        }
     }
 
     public void TakeDamage(int amount)
     {
-        damaged = true;
-        currentHealth -= amount;
+        if (GameManager.Instance == null || isDead || isProcessingDeath || isShieldActive) return;
 
-        if (currentHealth < 0) currentHealth = 0;
+        GameManager.Instance.ApplyDamage(amount);
 
-        UpdateHealthUI();
-
-        if (playerAudio != null)
-            playerAudio.Play();
-
-        if (currentHealth <= 0 && !isDead)
+        if (healthUI != null)
         {
-            Death();
+            healthUI.TriggerDamageFlash();
+            healthUI.UpdateUI();
+        }
+
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
+
+        if (GameManager.Instance.hearts <= 0)
+        {
+            HandleDeath();
         }
     }
 
-    private void UpdateHealthUI()
+    public void Heal(int amount)
     {
-        if (healthSlider != null)
-            healthSlider.value = currentHealth;
+        if (GameManager.Instance == null || isDead || isProcessingDeath) return;
 
-        if (healthText != null)
-            healthText.text = currentHealth + " / " + startingHealth;
+        GameManager.Instance.Heal(amount);
+
+        if (healthUI != null)
+        {
+            healthUI.UpdateUI();
+        }
     }
 
-    private void Death()
+    private void HandleDeath()
     {
+        if (isProcessingDeath) return;
+        isProcessingDeath = true;
         isDead = true;
 
-        if (playerAnim != null)
-            playerAnim.SetTrigger("Die");
+        if (playerCollider != null) playerCollider.enabled = false;
+        if (playerShooting != null) playerShooting.enabled = false;
+        if (controller != null) controller.enabled = false;
 
-        if (playerAudio != null && deathClip != null)
+        if (audioSource != null && deathClip != null)
         {
-            playerAudio.clip = deathClip;
-            playerAudio.Play();
+            audioSource.PlayOneShot(deathClip);
         }
 
-        if (playerMovement != null)
-            playerMovement.enabled = false;
-    }
+        if (anim != null) anim.SetTrigger("Die");
 
-    public void RestartLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ProcessPlayerDeath();
+        }
     }
 }

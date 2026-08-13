@@ -3,10 +3,10 @@ using UnityEngine;
 public class PlayerRotationCC : MonoBehaviour
 {
     [Header("Configuración de Rotación")]
-    public float tapAngle = 15f;            // Grados de giro por toque corto (Tap)
-    public float turnSpeed = 15f;           // Velocidad de la interpolación (Slerp)
-    public float holdRotationSpeed = 180f;  // Velocidad de giro continuo al mantener (grados/seg)
-    public float holdThreshold = 0.18f;     // Tiempo en segundos para considerar botón "mantenido"
+    public float tapAngle = 15f;            // Grados por toque (Tap)
+    public float turnSpeed = 15f;           // Velocidad de interpolación (Slerp)
+    public float holdRotationSpeed = 180f;  // Velocidad de giro continuo
+    public float holdThreshold = 0.18f;     // Umbral de tiempo para considerar Hold
 
     private Quaternion targetRotation;
     private float lbTimer = 0f;
@@ -19,7 +19,7 @@ public class PlayerRotationCC : MonoBehaviour
 
     void Update()
     {
-        // 1. Quick Turn de 180° (si presiona ambos botones a la vez)
+        // 1. Quick Turn de 180° (si presiona ambos bumpers a la vez)
         if ((Input.GetButtonDown(InputConstants.BUTTON_ROTATE_LEFT) && Input.GetButton(InputConstants.BUTTON_ROTATE_RIGHT)) ||
             (Input.GetButtonDown(InputConstants.BUTTON_ROTATE_RIGHT) && Input.GetButton(InputConstants.BUTTON_ROTATE_LEFT)))
         {
@@ -42,14 +42,14 @@ public class PlayerRotationCC : MonoBehaviour
 
     void HandleRotationButton(string buttonName, ref float buttonTimer, float direction)
     {
-        // Toque corto instantáneo (Tap): Añade 15° al targetRotation
+        // Toque corto instantáneo (Tap)
         if (Input.GetButtonDown(buttonName))
         {
             targetRotation *= Quaternion.Euler(0f, tapAngle * direction, 0f);
             buttonTimer = 0f;
         }
 
-        // Mantener presionado (Hold): Desplaza progresivamente el targetRotation
+        // Mantener presionado (Hold)
         if (Input.GetButton(buttonName))
         {
             buttonTimer += Time.deltaTime;
@@ -61,7 +61,6 @@ public class PlayerRotationCC : MonoBehaviour
             }
         }
 
-        // Reinicia el contador al soltar el botón
         if (Input.GetButtonUp(buttonName))
         {
             buttonTimer = 0f;
