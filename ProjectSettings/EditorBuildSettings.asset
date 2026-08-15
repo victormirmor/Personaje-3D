@@ -8,12 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/juego disparos 3D/Scenes/MainMenu.unity
     guid: 1fefd15091700797782047b1b89b2360
-  - enabled: 0
-    path: Assets/juego disparos 3D/Scenes/00.unity
-    guid: 81cec171812057a218b5f12bd2721f0a
-  - enabled: 0
-    path: Assets/juego disparos 3D/Scenes/SampleScene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/juego disparos 3D/Scenes/01.unity
     guid: d70ab0f8f82fb5186af31f3e0f16ff8d
