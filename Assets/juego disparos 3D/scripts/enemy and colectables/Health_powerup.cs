@@ -14,7 +14,7 @@ namespace CompleteProject
         {
             // Set up the reference.
             player = GameObject.FindGameObjectWithTag ("Player");
-            playerHealth = FindObjectOfType <HealthManager> ();
+            playerHealth = FindAnyObjectByType <HealthManager> ();
         }
 
         void OnTriggerEnter (Collider other){

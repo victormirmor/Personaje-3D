@@ -61,6 +61,8 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -111,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b0f549b3722cee19a03e19a1069a163, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefabToGive: {fileID: 6733838689323153886, guid: 62912ebbdeabd1173ae5051553c8858f, type: 3}
+  bulletPrefabToGive: {fileID: 8878768313654530188, guid: e819d986bda8f5225b4c4cd348ca273d, type: 3}
   ammoAmount: 20
 --- !u!136 &3804012500537055449
 CapsuleCollider:

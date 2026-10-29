@@ -36,9 +36,9 @@ public class Coin : MonoBehaviour{
     void SearchManagers() {
       
            if(GameManager==null){
-        GameManager=FindObjectOfType<GameManager>();
+        GameManager=FindAnyObjectByType<GameManager>();
         if(FXManager==null){
-        FXManager=FindObjectOfType<SoundFXManagerv>();
+        FXManager=FindAnyObjectByType<SoundFXManagerv>();
         } 
       }   
     }

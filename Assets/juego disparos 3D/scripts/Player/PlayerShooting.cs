@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.EventSystems; // Required for UI check
+using UnityEngine.EventSystems;
+using CrossInput;
 
 
     public class PlayerShooting : MonoBehaviour
@@ -30,7 +31,7 @@ using UnityEngine.EventSystems; // Required for UI check
 
             timer += Time.deltaTime;
 
-            if (Input.GetButton ("Fire1") && timer >= timeBetweenBullets && Time.timeScale != 0 && Bullets_rest > 0)
+            if (InputManager.GetButton ("Fire1") && timer >= timeBetweenBullets && Time.timeScale != 0 && Bullets_rest > 0)
             {
                 Debug.Log("disparo");
                 Shoot ();

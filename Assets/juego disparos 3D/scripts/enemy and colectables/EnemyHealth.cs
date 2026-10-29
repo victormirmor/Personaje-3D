@@ -30,7 +30,7 @@
             currentHealth = startingHealth;
             if (gameManager == null)
         {
-            gameManager= FindObjectOfType<GameManager>();
+            gameManager= FindAnyObjectByType<GameManager>();
         }
         }
 

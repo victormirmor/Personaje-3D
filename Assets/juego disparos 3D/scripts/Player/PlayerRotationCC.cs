@@ -1,4 +1,5 @@
 using UnityEngine;
+using CrossInput;
 
 public class PlayerRotationCC : MonoBehaviour
 {
@@ -20,8 +21,8 @@ public class PlayerRotationCC : MonoBehaviour
     void Update()
     {
         // 1. Quick Turn de 180° (si presiona ambos botones a la vez)
-        if ((Input.GetButtonDown(InputConstants.BUTTON_ROTATE_LEFT) && Input.GetButton(InputConstants.BUTTON_ROTATE_RIGHT)) ||
-            (Input.GetButtonDown(InputConstants.BUTTON_ROTATE_RIGHT) && Input.GetButton(InputConstants.BUTTON_ROTATE_LEFT)))
+        if ((InputManager.GetButtonDown(InputConstants.BUTTON_ROTATE_LEFT) && InputManager.GetButton(InputConstants.BUTTON_ROTATE_RIGHT)) ||
+            (InputManager.GetButtonDown(InputConstants.BUTTON_ROTATE_RIGHT) && InputManager.GetButton(InputConstants.BUTTON_ROTATE_LEFT)))
         {
             targetRotation *= Quaternion.Euler(0f, 180f, 0f);
             lbTimer = 0f;
@@ -43,14 +44,14 @@ public class PlayerRotationCC : MonoBehaviour
     void HandleRotationButton(string buttonName, ref float buttonTimer, float direction)
     {
         // Toque corto instantáneo (Tap): Añade 15° al targetRotation
-        if (Input.GetButtonDown(buttonName))
+        if (InputManager.GetButtonDown(buttonName))
         {
             targetRotation *= Quaternion.Euler(0f, tapAngle * direction, 0f);
             buttonTimer = 0f;
         }
 
         // Mantener presionado (Hold): Desplaza progresivamente el targetRotation
-        if (Input.GetButton(buttonName))
+        if (InputManager.GetButton(buttonName))
         {
             buttonTimer += Time.deltaTime;
 
@@ -62,9 +63,9 @@ public class PlayerRotationCC : MonoBehaviour
         }
 
         // Reinicia el contador al soltar el botón
-        if (Input.GetButtonUp(buttonName))
-        {
-            buttonTimer = 0f;
-        }
+       // if (InputManager.GetButtonUp(buttonName))
+        //{
+        //    buttonTimer = 0f;
+        //}
     }
 }

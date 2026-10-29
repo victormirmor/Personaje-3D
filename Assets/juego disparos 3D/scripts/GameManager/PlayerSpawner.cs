@@ -46,7 +46,7 @@ public class PlayerSpawner : MonoBehaviour
 
         if (GameManager.Instance.lives <= 0)
         {
-            FindObjectOfType<SceneFlowManager>()?.TriggerGameOver();
+            FindAnyObjectByType<SceneFlowManager>()?.TriggerGameOver();
             yield break;
         }
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using CrossInput;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerControllerCC : MonoBehaviour
@@ -31,8 +32,8 @@ public class PlayerControllerCC : MonoBehaviour
         }
 
         // 2. Obtener direcciones orientadas a la cámara
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        float h = InputManager.GetAxis("Horizontal");
+        float v = InputManager.GetAxis("Vertical");
 
         Transform camTransform = Camera.main.transform;
         Vector3 forward = camTransform.forward;
