@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 9
 --- !u!114 &-3280806160999012570
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -37,9 +37,9 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 3b44a38ec6f81134ab0f820ac54d6a93, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
+  m_ValidKeywords:
   - _ALPHATEST_ON
+  m_InvalidKeywords:
   - _EMISSION
   - _NORMALMAP
   m_LightmapFlags: 2
@@ -48,7 +48,8 @@ Material:
   m_CustomRenderQueue: 2000
   stringTagMap:
     RenderType: Opaque
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -144,3 +145,4 @@ Material:
     - _Hair_Color: {r: 0.30980387, g: 0.25490198, b: 0.17647055, a: 0}
     - _Skin_Color: {r: 1, g: 0.8, b: 0.682353, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
