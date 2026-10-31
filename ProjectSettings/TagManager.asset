@@ -4,24 +4,38 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Follow
+  - Wall
+  - Metal
+  - Blood
+  - Dirt
+  - Concrete
+  - ExplosiveBarrel
+  - Target
+  - GasTank
+  - Metal (Static)
+  - Wood (Static)
+  - Dirt (Static)
+  - Wood
+  - En6emy
+  - Bullet
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - post
+  - 
   - Water
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Wall
+  - First Person View
+  - Character
+  - Post Processing
+  - Post Processing Weapon
+  - Post Processing Scope
+  - Invisible Wall
+  - Projectile
   - 
   - 
   - 
